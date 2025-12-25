@@ -7,6 +7,7 @@ from rest_framework import serializers
 User = get_user_model()
 
 class UserSerializer(AbstractSerializer):
+    avatar_upload = serializers.ImageField(source='avatar', required=False, write_only=True)
     avatar = serializers.SerializerMethodField()
 
     class Meta:
@@ -22,11 +23,15 @@ class UserSerializer(AbstractSerializer):
             'created_at',
             'updated_at',
             'avatar',
+            'avatar_upload',
             'bio',
             'avatar_seed',
         ]
         read_only_fields = ['is_active', 'is_superuser']
 
     def get_avatar(self, obj):
+        request = self.context.get('request')
+        if obj.avatar:
+            return request.build_absolute_uri(obj.avatar.url)
         seed = get_user_avatar_seed(obj)
         return get_dicebear_url(seed=seed)

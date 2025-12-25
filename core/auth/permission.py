@@ -1,31 +1,42 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
-
+from django.contrib.auth import get_user_model
 
 class UserPermission(BasePermission):
     def has_permission(self, request, view):
-        # Суперпользователь может ВСЁ
+        # 1. Суперпользователь может всё
         if request.user and request.user.is_superuser:
             return True
 
-        # Разрешить всем читать (GET, HEAD, OPTIONS)
+        # 2. Разрешить всем просмотр (список постов и детали поста)
         if request.method in SAFE_METHODS:
             return True
 
-        # Для создания/изменения/удаления нужна аутентификация
+        # 3. Для создания поста и лайков нужна авторизация
         return request.user and request.user.is_authenticated
 
     def has_object_permission(self, request, view, obj):
-        # Суперпользователь может ВСЁ с объектами
+        # 1. Суперпользователь — полный доступ
         if request.user and request.user.is_superuser:
             return True
 
-        # Разрешить всем читать объекты
+        # 2. Читать объект (GET) могут все, даже анонимы
         if request.method in SAFE_METHODS:
             return True
 
-        # Для изменений (PUT, PATCH, DELETE) разрешить только автору
+        # 3. ЛОГИКА ДЛЯ ЛАЙКОВ:
+        # Проверяем, что экшен называется 'like' или 'remove_like'
+        # В этом случае нам важно только, чтобы пользователь был залогинен
+        if view.action in ['like', 'remove_like']:
+            return request.user.is_authenticated
+
+        # 4. ЛОГИКА ДЛЯ ИЗМЕНЕНИЯ (PUT, PATCH, DELETE):
+        # Если это не лайк и не GET, значит пользователь хочет изменить объект.
+        # Если у объекта есть автор, сверяем с request.user
         if hasattr(obj, 'author'):
             return obj.author == request.user
 
-        # Если у объекта нет автора, разрешить аутентифицированным пользователям
-        return request.user and request.user.is_authenticated
+        # Если это объект пользователя, то сверяем его с request.user
+        if isinstance(obj, get_user_model()):
+            return obj == request.user
+
+        return False
