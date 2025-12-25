@@ -12,6 +12,10 @@ class PostSerializer(AbstractSerializer):
     author = serializers.SlugRelatedField(queryset=User.objects.all(), slug_field='public_id')
     liked = serializers.SerializerMethodField()
     likes_count = serializers.SerializerMethodField()
+    comments_count = serializers.SerializerMethodField()
+
+    def get_comments_count(self, instance):
+        return instance.comment_set.count()
 
     def get_liked(self, instance):
         request = self.context.get('request', None)
@@ -42,5 +46,5 @@ class PostSerializer(AbstractSerializer):
 
     class Meta:
         model = Post
-        fields = ['id', 'author', 'body', 'edited', 'liked', 'likes_count', 'created_at', 'updated_at']
+        fields = ['id', 'author', 'body', 'edited', 'liked', 'likes_count', 'created_at', 'updated_at', 'comments_count']
         read_only_fields = ['edited']

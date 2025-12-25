@@ -1,6 +1,7 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
+from django_filters.rest_framework import DjangoFilterBackend
 
 from core.abstract.viewsets import AbstractViewSet
 from core.post.models import Post
@@ -9,9 +10,11 @@ from core.auth.permission import  UserPermission
 
 
 class PostViewSet(AbstractViewSet):
-    http_method_names = ('post', 'get', 'put', 'delete')
+    http_method_names = ('post', 'get', 'put', 'delete', 'patch')
     permission_classes = (UserPermission, )
     serializer_class = PostSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['author__public_id']
 
     def get_queryset(self):
         return Post.objects.all()

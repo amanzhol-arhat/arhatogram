@@ -1,5 +1,4 @@
-
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -143,3 +142,15 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
 ]
+
+#MEDIA
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'uploads'
+
+
+#DICEBEAR
+DICEBEAR = {
+    'DEFAULT_STYLE': 'dylan',
+    'DEFAULT_SEED': 'default-avatar',
+    'API_BASE': 'https://api.dicebear.com/9.x',
+}

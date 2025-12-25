@@ -1,8 +1,14 @@
+from fileinput import filename
+
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 
 from core.abstract import AbstractModel, AbstractManager
 
+
+def user_directory_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+    return 'user_{0}/{1}'.format(instance.public_id, filename)
 
 class UserManager(BaseUserManager, AbstractManager):
 
@@ -42,8 +48,23 @@ class User(AbstractModel, AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(db_index=True, unique=True)
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
-    post_liked = models.ManyToManyField("core_post.Post", related_name="liked_by")
     bio = models.CharField(max_length=300, null=True, blank=True)
+    avatar = models.ImageField(
+        null=True, blank=True, upload_to=user_directory_path)
+    post_liked = models.ManyToManyField(
+        "core_post.Post",
+        related_name="liked_by"
+    )
+    comments_liked = models.ManyToManyField(
+        "core_comment.Comment",
+        related_name="commented_by"
+    )
+    avatar_seed = models.CharField(
+        max_length=100,
+        blank=True,
+        default='',
+        help_text="DiceBear seed для стиля 'dylan'"
+    )
 
     def like(self, post):
         return self.post_liked.add(post)
@@ -53,6 +74,7 @@ class User(AbstractModel, AbstractBaseUser, PermissionsMixin):
 
     def has_liked(self, post):
         return self.post_liked.filter(pk=post.pk).exists()
+
 
 
     USERNAME_FIELD = 'email'
@@ -65,5 +87,28 @@ class User(AbstractModel, AbstractBaseUser, PermissionsMixin):
 
     @property
     def name(self):
-        return f'{self.first_name} {self.last_name}'
+        return f"{self.first_name} {self.last_name}"
 
+    def like_post(self, post):
+        """Like `post` if it hasn't been done yet"""
+        return self.posts_liked.add(post)
+
+    def remove_like_post(self, post):
+        """Remove a like from a `post`"""
+        return self.posts_liked.remove(post)
+
+    def has_liked_post(self, post):
+        """Return True if the user has liked a `post`; else False"""
+        return self.posts_liked.filter(pk=post.pk).exists()
+
+    def like_comment(self, comment):
+        """Like `comment` if it hasn't been done yet"""
+        return self.comments_liked.add(comment)
+
+    def remove_like_comment(self, comment):
+        """Remove a like from a `comment`"""
+        return self.comments_liked.remove(comment)
+
+    def has_liked_comment(self, comment):
+        """Return True if the user has liked a `comment`; else False"""
+        return self.comments_liked.filter(pk=comment.pk).exists()
