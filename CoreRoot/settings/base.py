@@ -94,6 +94,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
     ],
+    "EXCEPTION_HANDLER": "core.exceptions.custom_exception_handler",
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend",
     ],
@@ -128,4 +129,34 @@ DICEBEAR = {
     "DEFAULT_STYLE": "dylan",
     "DEFAULT_SEED": "default-avatar",
     "API_BASE": "https://api.dicebear.com/9.x",
+}
+
+# Logging
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": True,
+        },
+        "core": {  # Логи твоего приложения
+            "handlers": ["console"],
+            "level": "DEBUG",  # Хотим видеть всё
+            "propagate": True,
+        },
+    },
 }
