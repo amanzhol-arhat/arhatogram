@@ -1,5 +1,7 @@
 services:
   api:
+    environment:
+      - DJANGO_SETTINGS_MODULE=CoreRoot.settings.dev
     restart: always
     command: >
       sh -c "python manage.py migrate --no-input &&

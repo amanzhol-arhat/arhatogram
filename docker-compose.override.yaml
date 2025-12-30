@@ -1,5 +1,7 @@
 services:
   api:
+    environment:
+      - DJANGO_SETTINGS_MODULE=CoreRoot.settings.dev
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app  # Твой код из PyCharm синхронизируется с контейнером
@@ -7,6 +9,7 @@ services:
       - media_volume:/app/media
     ports:
       - "8000:8000" # Открываем 8000 порт, чтобы можно было стучаться в обход Nginx
+
 
   nginx:
     volumes:

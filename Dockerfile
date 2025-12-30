@@ -4,7 +4,8 @@ FROM python:3.13-alpine
 WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    DJANGO_SETTINGS_MODULE=CoreRoot.settings.prod
 
 RUN apk update && apk add --no-cache \
     postgresql-dev \
