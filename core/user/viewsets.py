@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -22,6 +23,33 @@ class UserViewSet(AbstractViewSet):
         obj = User.objects.get_object_by_public_id(self.kwargs["pk"])
         self.check_object_permissions(self.request, obj)
         return obj
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        cache_key = f"user:{instance.public_id}"
+
+        cached_data = cache.get(cache_key)
+
+        if cached_data:
+            return Response(cached_data)
+
+        serializer = self.get_serializer(instance)
+        data = serializer.data
+
+        cache.set(cache_key, data, timeout=300)
+
+        return Response(data)
+
+    def update(self, request, *args, **kwargs):
+        response = super().update(request, *args, **kwargs)
+
+        if response.status_code == 200:
+            instance = response.data
+            cache_key = f"user:{instance['public_id']}"
+            cache.delete(cache_key)
+
+        return response
 
     @action(detail=True, methods=["post"])
     def follow(self, request, *args, **kwargs):

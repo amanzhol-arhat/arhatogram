@@ -1,4 +1,11 @@
 services:
+  redis:
+    image: redis:7.0-alpine
+    restart: always
+    volumes:
+      - redis_data:/data
+    expose:
+      - 6379
   db:
     image: postgres:14.3-alpine
     container_name: arhatogram_db
@@ -37,3 +44,4 @@ volumes:
   postgres_data:
   static_volume:
   media_volume:
+  redis_data:
