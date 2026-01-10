@@ -12,6 +12,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-change-me-for-dev")
 
 
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -26,6 +27,8 @@ INSTALLED_APPS = [
     "core.auth",
     "core.post.apps.PostConfig",
     "core.comment",
+    "channels",
+    "core.chat",
 ]
 
 MIDDLEWARE = [
@@ -174,3 +177,18 @@ CACHES = {
 }
 CELERY_BROKER_URL = "redis://redis:6379/0"
 CELERY_RESULT_BACKEND = "redis://redis:6379/0"
+
+
+# ASGI
+ASGI_APPLICATION = "CoreRoot.asgi.application"
+
+
+# CHANNELS
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}

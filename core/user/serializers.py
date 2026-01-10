@@ -66,7 +66,10 @@ class UserSerializer(AbstractSerializer):
     def get_avatar(self, obj):
         request = self.context.get("request")
         if obj.avatar:
-            return request.build_absolute_uri(obj.avatar.url)
+            if request:
+                return request.build_absolute_uri(obj.avatar.url)
+            return obj.avatar.url
+
         seed = get_user_avatar_seed(obj)
         return get_dicebear_url(seed=seed)
 

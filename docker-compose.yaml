@@ -30,6 +30,7 @@ services:
     env_file: .env
     volumes:
       - .:/app
+    command: daphne -b 0.0.0.0 -p 8000 CoreRoot.asgi:application
     depends_on:
       db:
         condition: service_healthy

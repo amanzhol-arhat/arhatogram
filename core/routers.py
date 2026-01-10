@@ -1,6 +1,9 @@
+from django.urls import re_path
 from rest_framework_nested import routers
 
 from core.auth.viewsets import LoginViewSet, RefreshViewSet, RegisterViewSet
+from core.chat import consumer
+from core.chat.viewsets import ConversationViewSet, MessageViewSet
 from core.comment.viewsets import CommentViewSet
 from core.post.viewsets import PostViewSet
 from core.user.viewsets import UserViewSet
@@ -12,8 +15,15 @@ router.register(r"auth/register", RegisterViewSet, basename="auth-register")
 router.register(r"auth/login", LoginViewSet, basename="auth-login")
 router.register(r"auth/refresh", RefreshViewSet, basename="auth-refresh")
 router.register(r"post", PostViewSet, basename="post")
+router.register(r"chats", ConversationViewSet, basename="chats")
+router.register(r"messages", MessageViewSet, basename="messages")
 posts_router = routers.NestedSimpleRouter(router, r"post", lookup="post")
 posts_router.register(r"comment", CommentViewSet, basename="post-comment")
 
 
 urlpatterns = [*router.urls, *posts_router.urls]
+
+websocket_urlpatterns = [
+    # ws://localhost:8000/ws/chat/<conversation_id>/
+    re_path(r"ws/chat/(?P<conversation_id>[^/]+)/$", consumer.ChatConsumer.as_asgi()),
+]
