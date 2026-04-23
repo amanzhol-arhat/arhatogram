@@ -9,7 +9,9 @@ import Login from "./pages/Login"
 import SinglePost from "./pages/SinglePost";
 import Profile from "../src/pages/Profile"
 import EditProfile from "./pages/EditProfile";
-
+import ConversationList from "./component/chat/ConversationList.jsx";
+import Chat from "./component/chat/Chat.jsx";
+import Inbox from "./pages/Inbox.jsx";
 
 function App(){
   return(
@@ -40,6 +42,22 @@ function App(){
         element={
           <ProtectedRoute>
             <EditProfile />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/inbox/"
+        element={
+          <ProtectedRoute>
+            <Inbox />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/inbox/:conversationId/"
+        element={
+          <ProtectedRoute>
+            <Inbox />
           </ProtectedRoute>
         }
       />
