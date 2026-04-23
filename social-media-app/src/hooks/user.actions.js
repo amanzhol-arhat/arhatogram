@@ -2,7 +2,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import axiosService from "../helpers/axios"; // Import the axios instance
 
-const baseURL = "http://localhost:8000/api";
+const baseURL = "https://shelving-wildcat-steering.ngrok-free.dev/api";
 
 // Утилиты без хуков — можно вызывать где угодно
 export const getAccessTokenRaw = () => {

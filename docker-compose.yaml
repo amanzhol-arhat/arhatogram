@@ -59,6 +59,17 @@ services:
     depends_on:
       - api
 
+  frontend:
+    build:
+      context: ./social-media-app
+      dockerfile: Dockerfile
+    container_name: arhatogram_frontend
+    restart: always
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+
 volumes:
   postgres_data:
   static_volume:

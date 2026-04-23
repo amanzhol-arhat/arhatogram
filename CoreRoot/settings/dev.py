@@ -3,15 +3,17 @@ import os
 import dj_database_url
 
 from .base import *  # noqa: F403, F405
+from corsheaders.defaults import default_headers
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "0.0.0.0"]
+ALLOWED_HOSTS = ["*"]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "ngrok-skip-browser-warning",
 ]
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
 if os.environ.get("TESTING") == "True":
     DATABASES = {
@@ -23,10 +25,8 @@ if os.environ.get("TESTING") == "True":
 else:
     DATABASE_URL = os.getenv("DATABASE_URL")
     if DATABASE_URL:
-        # Для Docker разработки (Postgres)
         DATABASES = {"default": dj_database_url.parse(DATABASE_URL)}
     else:
-        # Fallback на SQLite, если запускаешь без докера
         DATABASES = {
             "default": {
                 "ENGINE": "django.db.backends.sqlite3",

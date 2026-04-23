@@ -2,7 +2,10 @@ import axios from "axios";
 import { getAccessTokenRaw, getRefreshTokenRaw, updateAccessToken } from "../hooks/user.actions";
 
 const api = axios.create({
-    baseURL: "http://localhost:8000/api",
+    baseURL: "https://shelving-wildcat-steering.ngrok-free.dev/api",
+    headers: {
+    "ngrok-skip-browser-warning": "69420",
+  },
 });
 
 api.interceptors.request.use((config) => {
@@ -19,7 +22,6 @@ api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
-        // Проверяем, что ошибка - 401 Unauthorized, и что это не повторный запрос
         if (error.response.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
 
@@ -32,11 +34,9 @@ api.interceptors.response.use(
 
                 updateAccessToken(access);
 
-                // Обновляем заголовок авторизации и повторяем исходный запрос
                 originalRequest.headers.Authorization = `Bearer ${access}`;
                 return api(originalRequest);
             } catch (refreshError) {
-                // Если обновление токена не удалось, перенаправляем на страницу входа
                 window.location.href = '/login/';
                 return Promise.reject(refreshError);
             }

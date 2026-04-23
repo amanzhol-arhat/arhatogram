@@ -24,6 +24,7 @@ const ProfileDetail = (props) => {
           width={120}
           height={120}
           className="me-5 border border-primary border-2"
+          style={{ objectFit: "cover" }}
         />
         <div className="d-flex flex-column justify-content-start align-self-center mt-2">
           <p className="fs-4 m-0">
@@ -33,15 +34,32 @@ const ProfileDetail = (props) => {
           <p className="fs-6">
             <small>{bio || "(No bio.)"}</small>
           </p>
-          {loggedInUser && loggedInUser.id === id && (
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => navigate(`/profile/${id}/edit/`)}
-            >
-              Edit
-            </Button>
-          )}
+          
+          {/* Блок с кнопками */}
+          <div className="d-flex flex-row gap-2 mt-2">
+            {/* Кнопка "Edit" для своего профиля */}
+            {loggedInUser && loggedInUser.id === id && (
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => navigate(`/profile/${id}/edit/`)}
+              >
+                Edit
+              </Button>
+            )}
+
+            {loggedInUser && loggedInUser.id !== id && (
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => navigate(`/inbox/`)}
+              >
+                <i className="bi bi-chat-right-text-fill me-2"></i>
+                Message
+              </Button>
+            )}
+          </div>
+          
         </div>
       </div>
     </div>

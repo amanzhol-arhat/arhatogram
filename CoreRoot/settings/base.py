@@ -32,8 +32,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -192,3 +192,10 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+#CSRF
+CSRF_TRUSTED_ORIGINS = [
+    "https://thick-breads-rush.loca.lt", 
+    "https://*.loca.lt",                
+    "https://*.ngrok-free.dev"          
+]
