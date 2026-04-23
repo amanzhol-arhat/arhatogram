@@ -65,29 +65,35 @@ function Post(props) {
   };
   return (
     <>
-      <Card className="rounded-3 my-4"
-            data-testid="post-test">
-        <Card.Body>
-          <Card.Title className="d-flex flex-row justify-content-between">
-            <div className="d-flex flex-row">
-              <Image
-                src={post.author.avatar}
-                roundedCircle
-                width={48}
-                height={48}
-                className="me-2 border border-primary border-2"
-              />
-              <div
-                className="d-flex flex-column
-              justify-content-start
-              align-self-center mt-2"
-              >
-                <p className="fs-6 m-0">{post.author.username}</p>
-                <p className="fs-6 fw-lighter">
-                  <small>{format(post.created_at)}</small>
-                </p>
-              </div>
-            </div>
+              <Card className="rounded-3 my-4"
+                    data-testid="post-test">
+                <Card.Body>
+                  <Card.Title className="d-flex flex-row justify-content-between">
+                    <Link 
+          to={`/profile/${post.author.id}/`} 
+          className="d-flex flex-row text-decoration-none"
+          style={{ cursor: "pointer" }}
+        >
+        <Image
+          src={post.author.avatar}
+          roundedCircle
+          width={48}
+          height={48}
+          className="me-2 border border-primary border-2"
+        />
+        <div
+          className="d-flex flex-column
+        justify-content-start
+        align-self-center mt-2"
+        >
+          <p className="fs-6 m-0 text-primary fw-bold">
+            {post.author.username}
+          </p>
+          <p className="fs-6 fw-lighter text-muted">
+            <small>{format(post.created_at)}</small>
+          </p>
+        </div>
+      </Link>
             {user.username === post.author.username && (
               <div>
                 <Dropdown>

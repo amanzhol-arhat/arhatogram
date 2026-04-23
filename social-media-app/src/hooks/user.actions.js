@@ -1,8 +1,9 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import axiosService from "../helpers/axios"; // Import the axios instance
+import axiosService from "../helpers/axios";
 
 const baseURL = "https://shelving-wildcat-steering.ngrok-free.dev/api";
+// const baseURL = "http://localhost:8000/api";
 
 // Утилиты без хуков — можно вызывать где угодно
 export const getAccessTokenRaw = () => {
@@ -71,8 +72,14 @@ function useUserActions() {
     return getRefreshTokenRaw();
   };
 
-  const edit = (data, userId) => {
-    return axiosService.patch(`/users/${userId}/`, data).then((res) => {
+const edit = (data, userId) => {
+  return axiosService
+    .patch(`/users/${userId}/`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .then((res) => {
       localStorage.setItem(
         "auth",
         JSON.stringify({
@@ -83,7 +90,7 @@ function useUserActions() {
       );
       return res;
     });
-  };
+};
 
   return {
     login,

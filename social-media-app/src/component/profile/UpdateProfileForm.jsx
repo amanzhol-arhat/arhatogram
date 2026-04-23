@@ -46,7 +46,7 @@ function UpdateProfileForm(props) {
     });
 
     if (avatar) {
-      formData.append("avatar", avatar);
+      formData.append("avatar_upload", avatar);
     }
 
     userActions
